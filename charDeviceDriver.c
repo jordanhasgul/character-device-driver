@@ -2,7 +2,7 @@
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jordan Hasgul");
-MODULE_DESCRIPTION("A basic Linux LKM character device driver");
+MODULE_DESCRIPTION("A basic concurrent Linux LKM character device driver");
 
 DEFINE_MUTEX(devLock);
 
