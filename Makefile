@@ -6,7 +6,6 @@ EXTRA_CFLAGS += -I$(PWD)
 MODULES = charDeviceDriver.ko 
 obj-m += charDeviceDriver.o 
 
-
 all: $(MODULES)
 
 charDeviceDriver.ko: charDeviceDriver.c
@@ -15,5 +14,3 @@ charDeviceDriver.ko: charDeviceDriver.c
 clean:
 	make -C $(KERNELDIR) M=$(PWD) clean
 	rm -f *.o *.o.rc
-
-
