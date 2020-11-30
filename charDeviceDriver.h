@@ -40,9 +40,3 @@ static struct file_operations fops = { .open = charDeviceOpen, .release = charDe
 				       .read = charDeviceRead, .write = charDeviceWrite };
 
 #endif
-
-
-
-
-
-

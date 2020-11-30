@@ -136,22 +136,3 @@ static ssize_t charDeviceWrite(struct file* file, const char* buffer, size_t len
 
 	return -ENOMEM;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
