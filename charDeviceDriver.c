@@ -20,7 +20,7 @@ static int __init initCharDriver(void)
 
 	printk(KERN_INFO "Info: to create a device file, use 'mknod /dev/%s c %d 0'.\n", DEVICE_NAME, majorNumber);
 	printk(KERN_INFO "Info: to write to the device file, use 'echo <message> > /dev/%s'.\n", DEVICE_NAME);
-	printk(KERN_INFO "Info: to read from the device, use 'head -n 1 < /dev/%s'.\n", DEVICE_NAME);
+	printk(KERN_INFO "Info: to read from the device file, use 'head -n 1 < /dev/%s'.\n", DEVICE_NAME);
 	printk(KERN_INFO "Info: to delete the device file, use 'rm -rf %s'.\n", DEVICE_NAME);
 
 	return 0;
@@ -109,22 +109,32 @@ static ssize_t charDeviceWrite(struct file* file, const char* buffer, size_t len
 		return -EAGAIN;
 	}
 
-	printk(KERN_INFO "Log: begun writing to the device driver.\n");
-
 	struct messageListNode* mnode = kmalloc(sizeof(struct messageListNode), GFP_KERNEL);
-	mnode->messageLength = length;
+	if (mnode != NULL)
+	{
+		mnode->message = kmalloc(length * sizeof(char), GFP_KERNEL);
+		if (mnode->message != NULL)
+		{
+			printk(KERN_INFO "Log: begun writing to the device driver.\n");
 
-	mnode->message = kmalloc(length * sizeof(char), GFP_KERNEL);
-	copy_from_user(mnode->message, buffer, mnode->messageLength);
+			mnode->messageLength = length;
+			copy_from_user(mnode->message, buffer, mnode->messageLength);
 
-	list_add(&mnode->list, &messageList);
-	messagesSize += mnode->messageLength;
+			list_add(&mnode->list, &messageList);
+			messagesSize += mnode->messageLength;
 
-	printk(KERN_INFO "Log: finished writing to the device driver.\n");
+			printk(KERN_INFO "Log: finished writing to the device driver.\n");
 
-	mutex_unlock(&devLock);	
+			mutex_unlock(&devLock);
 
-	return length;
+			return length;
+		}
+	}
+
+	printk(KERN_ALERT "Error: memory allocation failed.\n");
+	mutex_unlock(&devLock);
+
+	return -ENOMEM;
 }
 
 
